@@ -1,0 +1,37 @@
+{
+  "name": "new_marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^0.12.9",
+    "@thirdweb-dev/react": "^3.11.8",
+    "@thirdweb-dev/sdk": "^3.10.11",
+    "@types/node": "18.15.13",
+    "@types/react": "18.0.37",
+    "@types/react-dom": "18.0.11",
+    "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "ethers": "^5.7.2",
+    "firebase": "^9.20.0",
+    "next": "13.3.0",
+    "postcss": "8.4.23",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-fullscreen-loading": "^0.0.4",
+    "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.8",
+    "slick-carousel": "^1.8.1",
+    "tailwindcss": "3.3.1",
+    "typescript": "5.0.4",
+    "wagmi": "^0.12.12"
+  },
+  "devDependencies": {
+    "@types/react-slick": "^0.23.10"
+  }
+}
