@@ -1,0 +1,32 @@
+.heroShadow {
+  top: 124px;
+  background: radial-gradient(
+    79.85% 79.85% at 49.94% 20.15%,
+    rgba(49, 39, 154, 0.69) 0%,
+    rgba(125, 18, 231, 0.69) 38.24%,
+    rgba(204, 93, 177, 0.3657) 50.96%,
+    rgba(125, 18, 231, 0.69) 65.1%,
+    rgba(45, 39, 105, 0) 100%
+  );
+  filter: blur(250px);
+}
+.textAfterHero {
+  background: linear-gradient(0.5deg, #05050f 33.37%, rgba(4, 11, 17, 0) 79.04%);
+}
+.stakeInsights::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 3px;
+  background: linear-gradient(90deg, #7d12e7 0%, #ff8d8d 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.progressBar {
+  background: linear-gradient(272.64deg, #ff8d8d 0.86%, #7d12e7 68.2%);
+  border-radius: 0px 8px 8px 0px;
+}
