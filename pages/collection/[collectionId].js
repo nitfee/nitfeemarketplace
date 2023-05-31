@@ -52,13 +52,20 @@ const Collection = () => {
       }));
       console.log("nftsData", nftsData);
       const availableNftsData = nftsData.filter((item) => !item.soldAt);
-      console.log("availableNftsData", availableNftsData);
+      console.log("test1", availableNftsData.length);
+      console.log("test2", collectionData[0].listingCount);
+      // if test1 and test2 are not equal, set listingCount to test1
+      if (availableNftsData.length !== collectionData[0].listingCount) {
+        const collectionRef = collection(db, "collections");
+        await collectionRef.doc(collectionData[0].id).update({
+          listingCount: availableNftsData.length,
+        });
+      }
+
       setNftsList(availableNftsData);
     })();
   }, [collectionId]);
-
   // get collection data from firbase using address
-
   return (
     <>
       <Head>
