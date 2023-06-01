@@ -64,7 +64,7 @@ const Create = () => {
           // when should the listing open up for offers
           startTimestamp: new Date(),
           // how long the listing will be open for
-          listingDurationInSeconds: secondsBetweenDates(duration),
+          listingDurationInSeconds: 31536000,
           // how many of the asset you want to list
           quantity: 1,
           // address of the currency contract that will be used to pay for the listing
@@ -463,18 +463,20 @@ const Create = () => {
               </div>
             </>
           )}
-          <div className="w-full">
-            <p>Duration</p>
-            <input
-              required
-              type="date"
-              name="duration"
-              placeholder="Duration"
-              className="w-full p-4 rounded border border-[#696969] bg-transparent outline-none text-white"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-            />
-          </div>
+          {active != "directListing" && (
+            <div className="w-full">
+              <p>Duration</p>
+              <input
+                required
+                type="date"
+                name="duration"
+                placeholder="Duration"
+                className="w-full p-4 rounded border border-[#696969] bg-transparent outline-none text-white"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              />
+            </div>
+          )}
         </div>
         <button
           onClick={(e) => handleCreateListing(e)}
