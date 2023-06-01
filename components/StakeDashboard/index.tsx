@@ -22,6 +22,22 @@ import { ethers } from "ethers";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "@/helpers/firebase-config";
 
+const stakeABI = [
+  {
+    type: "function",
+    name: "stake",
+    inputs: [
+      {
+        type: "uint256[]",
+        name: "_tokenIds",
+        internalType: "uint256[]",
+      },
+    ],
+    outputs: [],
+    stateMutability: "nonpayable",
+  },
+];
+
 const StakeDashboard: FC = () => {
   const signer = useSigner();
   const provider = signer?.provider;
@@ -40,8 +56,12 @@ const StakeDashboard: FC = () => {
 
   // nft staking contract address
   const { contract: goldStakingContract } = useContract(GOLD_STAKING_ADDRESS);
-  const { contract: silverStakingContract } = useContract(SIVER_STAKING_ADDRESS);
-  const { contract: bronzeStakingContract } = useContract(BRONZE_STAKING_ADDRESS);
+  const { contract: silverStakingContract } = useContract(
+    SIVER_STAKING_ADDRESS
+  );
+  const { contract: bronzeStakingContract } = useContract(
+    BRONZE_STAKING_ADDRESS
+  );
 
   // nft contact address
   const { contract: goldNftContract } = useContract(GOLD_NFT_ADDRESS);
@@ -51,99 +71,151 @@ const StakeDashboard: FC = () => {
   // owned nfts read
   const { data: goldOwnedNfts, refetch: refetchGoldOwnedNfts } = useOwnedNFTs(
     goldNftContract,
-    address,
+    address
   );
-  const { data: silverOwnedNfts, refetch: refetchSilverOwnedNfts } = useOwnedNFTs(
-    silverNftContract,
-    address,
-  );
-  const { data: bronzeOwnedNfts, refetch: refetchBronzeOwnedNfts } = useOwnedNFTs(
-    bronzeNftContract,
-    address,
-  );
+  const { data: silverOwnedNfts, refetch: refetchSilverOwnedNfts } =
+    useOwnedNFTs(silverNftContract, address);
+  const { data: bronzeOwnedNfts, refetch: refetchBronzeOwnedNfts } =
+    useOwnedNFTs(bronzeNftContract, address);
 
   // approve for all read
-  const { data: goldNftRead } = useContractRead(goldNftContract, "isApprovedForAll", [
-    address,
-    GOLD_STAKING_ADDRESS,
-  ]);
-  const { data: silverNftRead } = useContractRead(silverNftContract, "isApprovedForAll", [
-    address,
-    SIVER_STAKING_ADDRESS,
-  ]);
-  const { data: bronzeNftRead } = useContractRead(bronzeNftContract, "isApprovedForAll", [
-    address,
-    BRONZE_STAKING_ADDRESS,
-  ]);
+  const { data: goldNftRead } = useContractRead(
+    goldNftContract,
+    "isApprovedForAll",
+    [address, GOLD_STAKING_ADDRESS]
+  );
+  const { data: silverNftRead } = useContractRead(
+    silverNftContract,
+    "isApprovedForAll",
+    [address, SIVER_STAKING_ADDRESS]
+  );
+  const { data: bronzeNftRead } = useContractRead(
+    bronzeNftContract,
+    "isApprovedForAll",
+    [address, BRONZE_STAKING_ADDRESS]
+  );
 
   // approve for all  write
   const { mutateAsync: setApprovalForAllGold } = useContractWrite(
     goldNftContract,
-    "setApprovalForAll",
+    "setApprovalForAll"
   );
   const { mutateAsync: setApprovalForAllSilver } = useContractWrite(
     silverNftContract,
-    "setApprovalForAll",
+    "setApprovalForAll"
   );
   const { mutateAsync: setApprovalForAllBronze } = useContractWrite(
     bronzeNftContract,
-    "setApprovalForAll",
+    "setApprovalForAll"
   );
 
   // stake functions
-  const { mutateAsync: goldStakeHandler } = useContractWrite(goldStakingContract, "stake");
-  const { mutateAsync: silverStakeHandler } = useContractWrite(silverStakingContract, "stake");
-  const { mutateAsync: bronzeStakeHandler } = useContractWrite(bronzeStakingContract, "stake");
+  const { mutateAsync: goldStakeHandler } = useContractWrite(
+    goldStakingContract,
+    "stake"
+  );
+  const { mutateAsync: silverStakeHandler } = useContractWrite(
+    silverStakingContract,
+    "stake"
+  );
+  const { mutateAsync: bronzeStakeHandler } = useContractWrite(
+    bronzeStakingContract,
+    "stake"
+  );
 
   // unstake write
-  const { mutateAsync: goldUnstaking } = useContractWrite(goldStakingContract, "withdraw");
-  const { mutateAsync: silverUnstaking } = useContractWrite(silverStakingContract, "withdraw");
-  const { mutateAsync: bronzeUnstaking } = useContractWrite(bronzeStakingContract, "withdraw");
+  const { mutateAsync: goldUnstaking } = useContractWrite(
+    goldStakingContract,
+    "withdraw"
+  );
+  const { mutateAsync: silverUnstaking } = useContractWrite(
+    silverStakingContract,
+    "withdraw"
+  );
+  const { mutateAsync: bronzeUnstaking } = useContractWrite(
+    bronzeStakingContract,
+    "withdraw"
+  );
 
   // claim write
-  const { mutateAsync: claimGoldRewards } = useContractWrite(goldStakingContract, "claimRewards");
+  const { mutateAsync: claimGoldRewards } = useContractWrite(
+    goldStakingContract,
+    "claimRewards"
+  );
   const { mutateAsync: claimSilverRewards } = useContractWrite(
     silverStakingContract,
-    "claimRewards",
+    "claimRewards"
   );
   const { mutateAsync: claimBronzeRewards } = useContractWrite(
     bronzeStakingContract,
-    "claimRewards",
+    "claimRewards"
   );
 
   const getStakeInfoHandler = async () => {
-    const goldStakingContract = new ethers.Contract(GOLD_STAKING_ADDRESS, abi, provider);
-    let updatedGoldStakingContract = await goldStakingContract.getStakeInfo(address);
-    setAccGoldInterest(
-      +ethers.utils.formatUnits(updatedGoldStakingContract._rewards.toString(), 18),
+    const goldStakingContract = new ethers.Contract(
+      GOLD_STAKING_ADDRESS,
+      abi,
+      provider
     );
-    updatedGoldStakingContract = updatedGoldStakingContract._tokensStaked.map((item: any) =>
-      item.toString(),
+    let updatedGoldStakingContract = await goldStakingContract.getStakeInfo(
+      address
+    );
+    setAccGoldInterest(
+      +ethers.utils.formatUnits(
+        updatedGoldStakingContract._rewards.toString(),
+        18
+      )
+    );
+    updatedGoldStakingContract = updatedGoldStakingContract._tokensStaked.map(
+      (item: any) => item.toString()
     );
     setGoldStakeInfo(updatedGoldStakingContract);
 
-    const silverStakingContract = new ethers.Contract(SIVER_STAKING_ADDRESS, abi, provider);
-    let updatedSilverStakingContract = await silverStakingContract.getStakeInfo(address);
+    const silverStakingContract = new ethers.Contract(
+      SIVER_STAKING_ADDRESS,
+      abi,
+      provider
+    );
+    let updatedSilverStakingContract = await silverStakingContract.getStakeInfo(
+      address
+    );
     setAccSilverInterest(
-      +ethers.utils.formatUnits(updatedSilverStakingContract._rewards.toString(), 18),
+      +ethers.utils.formatUnits(
+        updatedSilverStakingContract._rewards.toString(),
+        18
+      )
     );
-    updatedSilverStakingContract = updatedSilverStakingContract._tokensStaked.map((item: any) =>
-      item.toString(),
-    );
+    updatedSilverStakingContract =
+      updatedSilverStakingContract._tokensStaked.map((item: any) =>
+        item.toString()
+      );
     setSilverStakeInfo(updatedSilverStakingContract);
 
-    const bronzeStakingContract = new ethers.Contract(BRONZE_STAKING_ADDRESS, abi, provider);
-    let updatedBronzeStakingContract = await bronzeStakingContract.getStakeInfo(address);
+    const bronzeStakingContract = new ethers.Contract(
+      BRONZE_STAKING_ADDRESS,
+      abi,
+      provider
+    );
+    let updatedBronzeStakingContract = await bronzeStakingContract.getStakeInfo(
+      address
+    );
     setAccBronzeInterest(
-      +ethers.utils.formatUnits(updatedBronzeStakingContract._rewards.toString(), 18),
+      +ethers.utils.formatUnits(
+        updatedBronzeStakingContract._rewards.toString(),
+        18
+      )
     );
     console.log(
       "rewardforBronze",
-      ethers.utils.formatUnits(updatedBronzeStakingContract._rewards.toString(), 18),
+      ethers.utils.formatUnits(
+        updatedBronzeStakingContract._rewards.toString(),
+        18
+      )
     );
-    updatedBronzeStakingContract = updatedBronzeStakingContract._tokensStaked.map((item: any) =>
-      item.toString(),
-    );
+    updatedBronzeStakingContract =
+      updatedBronzeStakingContract._tokensStaked.map((item: any) =>
+        item.toString()
+      );
     setBronzeStakeInfo(updatedBronzeStakingContract);
   };
 
@@ -193,7 +265,13 @@ const StakeDashboard: FC = () => {
   const stakeHandler = async () => {
     console.log("stakeHandler", selectedNft);
     // if toStakeEntered is greater than owned nfts then return
-    if (!provider || !address || toStakeEntered == 0 || toStakeEntered > calculateNftsValue) return;
+    if (
+      !provider ||
+      !address ||
+      toStakeEntered == 0 ||
+      toStakeEntered > calculateNftsValue
+    )
+      return;
     try {
       const nftsRef = collection(db, "nfts");
       const q = query(nftsRef, where("seller", "==", address.toLowerCase()));
@@ -204,7 +282,9 @@ const StakeDashboard: FC = () => {
       if (selectedNft === "golden") {
         if (!goldNftRead) {
           console.log("goldNftRead", goldNftRead);
-          const data = await setApprovalForAllGold({ args: [GOLD_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllGold({
+            args: [GOLD_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!goldOwnedNfts) return;
@@ -219,8 +299,8 @@ const StakeDashboard: FC = () => {
         // select nfts that are gold
         let goldNFTsFromFirestore = nfts.filter((item) => {
           return (
-            item.assetContractAddress.toLowerCase() == GOLD_NFT_ADDRESS.toLowerCase() &&
-            !item.soldAt
+            item.assetContractAddress.toLowerCase() ==
+              GOLD_NFT_ADDRESS.toLowerCase() && !item.soldAt
           );
         });
 
@@ -240,18 +320,41 @@ const StakeDashboard: FC = () => {
 
         console.log("availableTokens", availableTokens);
         if (availableTokens.length < toStakeEntered) {
-          alert("You dont have enough nfts to stake or NFTs are listed for sale");
+          alert(
+            "You dont have enough nfts to stake or NFTs are listed for sale"
+          );
           return;
         }
         // stake the nfts
-        await goldStakeHandler({
-          args: [availableTokens.slice(0, toStakeEntered).map((item) => item.metadata.id)],
-        });
+        const goldStakeContract = new ethers.Contract(
+          GOLD_STAKING_ADDRESS,
+          stakeABI,
+          signer
+        );
+        // calculate gas limit
+
+        const goldStaking = await goldStakeContract.stake([
+          availableTokens
+            .slice(0, toStakeEntered)
+            .map((item) => +item.metadata.id),
+        ]);
+        await goldStaking.wait();
+        console.log("goldStaking", goldStaking);
+
+        // await goldStakeHandler({
+        //   args: [
+        //     availableTokens
+        //       .slice(0, toStakeEntered)
+        //       .map((item) => item.metadata.id),
+        //   ],
+        // });
         alert("Staked Successfully");
       }
       if (selectedNft === "silver") {
         if (!silverNftRead) {
-          const data = await setApprovalForAllSilver({ args: [SIVER_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllSilver({
+            args: [SIVER_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!silverOwnedNfts) return;
@@ -262,8 +365,8 @@ const StakeDashboard: FC = () => {
         // select nfts that are silver
         let silverNFTsFromFirestore = nfts.filter((item) => {
           return (
-            item.assetContractAddress.toLowerCase() == SILVER_NFT_ADDRESS.toLowerCase() &&
-            !item.soldAt
+            item.assetContractAddress.toLowerCase() ==
+              SILVER_NFT_ADDRESS.toLowerCase() && !item.soldAt
           );
         });
 
@@ -283,19 +386,40 @@ const StakeDashboard: FC = () => {
 
         console.log("availableTokens", availableTokens);
         if (availableTokens.length < toStakeEntered) {
-          alert("You dont have enough nfts to stake or NFTs are listed for sale");
+          alert(
+            "You dont have enough nfts to stake or NFTs are listed for sale"
+          );
           return;
         }
         // stake the nfts
-        await silverStakeHandler({
-          args: [availableTokens.slice(0, toStakeEntered).map((item) => item.metadata.id)],
-        });
+        const silverStakeContract = new ethers.Contract(
+          SIVER_STAKING_ADDRESS,
+          stakeABI,
+          signer
+        );
+        const silverStaking = await silverStakeContract.stake([
+          availableTokens
+            .slice(0, toStakeEntered)
+            .map((item) => +item.metadata.id),
+        ]);
+        await silverStaking.wait();
+        console.log("silverStaking", silverStaking);
+
+        // await silverStakeHandler({
+        //   args: [
+        //     availableTokens
+        //       .slice(0, toStakeEntered)
+        //       .map((item) => item.metadata.id),
+        //   ],
+        // });
         alert("Staked Successfully");
       }
 
       if (selectedNft === "bronze") {
         if (!bronzeNftRead) {
-          const data = await setApprovalForAllBronze({ args: [BRONZE_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllBronze({
+            args: [BRONZE_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!bronzeOwnedNfts) return;
@@ -306,8 +430,8 @@ const StakeDashboard: FC = () => {
         // select nfts that are bronze
         let bronzeNFTsFromFirestore = nfts.filter((item) => {
           return (
-            item.assetContractAddress.toLowerCase() == BRONZE_NFT_ADDRESS.toLowerCase() &&
-            !item.soldAt
+            item.assetContractAddress.toLowerCase() ==
+              BRONZE_NFT_ADDRESS.toLowerCase() && !item.soldAt
           );
         });
 
@@ -327,13 +451,33 @@ const StakeDashboard: FC = () => {
 
         console.log("availableTokens", availableTokens);
         if (availableTokens.length < toStakeEntered) {
-          alert("You dont have enough nfts to stake or NFTs are listed for sale");
+          alert(
+            "You dont have enough nfts to stake or NFTs are listed for sale"
+          );
           return;
         }
         // stake the nfts
-        await bronzeStakeHandler({
-          args: [availableTokens.slice(0, toStakeEntered).map((item) => item.metadata.id)],
-        });
+
+        const bronzeContract = new ethers.Contract(
+          BRONZE_STAKING_ADDRESS,
+          stakeABI,
+          signer
+        );
+        const bronzeStaking = await bronzeContract.stake([
+          availableTokens
+            .slice(0, toStakeEntered)
+            .map((item) => +item.metadata.id),
+        ]);
+        await bronzeStaking.wait();
+        console.log("bronzeStaking", bronzeStaking);
+
+        // await bronzeStakeHandler({
+        //   args: [
+        //     availableTokens
+        //       .slice(0, toStakeEntered)
+        //       .map((item) => item.metadata.id),
+        //   ],
+        // });
         alert("Staked Successfully");
       }
       // refetch all nfts
@@ -349,13 +493,20 @@ const StakeDashboard: FC = () => {
   const unstakeHandler = async () => {
     console.log("unstakeHandler", selectedNft);
     // if toStakeEntered is greater than owned nfts then return
-    if (!provider || !address || toUnStakeEntered == 0 || toUnStakeEntered > calculateUnstakeVaule)
+    if (
+      !provider ||
+      !address ||
+      toUnStakeEntered == 0 ||
+      toUnStakeEntered > calculateUnstakeVaule
+    )
       return;
     try {
       if (selectedNft === "golden") {
         if (!goldNftRead) {
           console.log("goldNftRead", goldNftRead);
-          const data = await setApprovalForAllGold({ args: [GOLD_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllGold({
+            args: [GOLD_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!goldStakeInfo) return;
@@ -367,7 +518,9 @@ const StakeDashboard: FC = () => {
       }
       if (selectedNft === "silver") {
         if (!silverNftRead) {
-          const data = await setApprovalForAllSilver({ args: [SIVER_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllSilver({
+            args: [SIVER_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!silverStakeInfo) return;
@@ -380,7 +533,9 @@ const StakeDashboard: FC = () => {
       }
       if (selectedNft === "bronze") {
         if (!bronzeNftRead) {
-          const data = await setApprovalForAllBronze({ args: [BRONZE_STAKING_ADDRESS, true] });
+          const data = await setApprovalForAllBronze({
+            args: [BRONZE_STAKING_ADDRESS, true],
+          });
           console.info("contract call successs", data);
         }
         if (!bronzeStakeInfo) return;
@@ -410,7 +565,8 @@ const StakeDashboard: FC = () => {
     singleTypeInterestAccrued = accBronzeInterest;
   }
 
-  let totalInterestAccured = accGoldInterest + accSilverInterest + accBronzeInterest;
+  let totalInterestAccured =
+    accGoldInterest + accSilverInterest + accBronzeInterest;
   console.log("singleTypeInterestAccrued", singleTypeInterestAccrued);
   console.log("totalInterestAccured", totalInterestAccured);
   const claimRewardsHandler = async () => {
@@ -433,7 +589,9 @@ const StakeDashboard: FC = () => {
   return (
     <React.Fragment>
       <section className=" md:mt-10 mt-5">
-        <div className={`mx-auto lg:p-[102px] p-4 relative rounded-[20px] ${styles.stakeInsights}`}>
+        <div
+          className={`mx-auto lg:p-[102px] p-4 relative rounded-[20px] ${styles.stakeInsights}`}
+        >
           <div className="flex xl:flex-row justify-center gap-16 flex-wrap">
             <div className="  space-y-12">
               <Image
@@ -460,7 +618,9 @@ const StakeDashboard: FC = () => {
               <div className="text-center space-y-5">
                 {activeBtn !== 1 && (
                   <>
-                    <p className="text-lg font-semibold text-white">Available For Staking</p>
+                    <p className="text-lg font-semibold text-white">
+                      Available For Staking
+                    </p>
                     <span className="text-4xl font-bold text-white block ">
                       {calculateNftsValue}
                     </span>
@@ -474,7 +634,10 @@ const StakeDashboard: FC = () => {
                 )}
                 {activeBtn === 1 && (
                   <>
-                    <label htmlFor="" className="flex justify-between items-center">
+                    <label
+                      htmlFor=""
+                      className="flex justify-between items-center"
+                    >
                       <span>Balance</span>
                       <span>{calculateNftsValue}</span>
                     </label>
@@ -505,7 +668,9 @@ const StakeDashboard: FC = () => {
               <div className="text-center space-y-5">
                 {activeBtn !== 2 && (
                   <>
-                    <p className="text-lg font-semibold text-white">Amount Accumulated</p>
+                    <p className="text-lg font-semibold text-white">
+                      Amount Accumulated
+                    </p>
                     <span className="text-4xl font-bold text-white block ">
                       {singleTypeInterestAccrued.toFixed(3)} CFX
                     </span>
@@ -532,7 +697,9 @@ const StakeDashboard: FC = () => {
               <div className="text-center space-y-5">
                 {activeBtn !== 3 && (
                   <>
-                    <p className="text-lg font-semibold text-white">Available For Unstaking</p>
+                    <p className="text-lg font-semibold text-white">
+                      Available For Unstaking
+                    </p>
                     <span className="text-4xl font-bold text-white block ">
                       {calculateUnstakeVaule}
                     </span>
@@ -546,7 +713,10 @@ const StakeDashboard: FC = () => {
                 )}
                 {activeBtn === 3 && (
                   <>
-                    <label htmlFor="" className="flex justify-between items-center">
+                    <label
+                      htmlFor=""
+                      className="flex justify-between items-center"
+                    >
                       <span>Balance</span>
                       <span> {calculateUnstakeVaule}</span>
                     </label>
