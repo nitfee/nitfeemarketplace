@@ -41,7 +41,11 @@ select {
 
 .nitfee-text,
 .stake-text {
-  background: linear-gradient(180deg, #ffffff 18.62%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    #ffffff 18.62%,
+    rgba(255, 255, 255, 0) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -184,7 +188,11 @@ select {
   transform: translate(0, 0);
 }
 .nitfee-text-sm {
-  background: linear-gradient(180deg, #ffffff 18.62%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    #ffffff 18.62%,
+    rgba(255, 255, 255, 0) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -295,4 +303,202 @@ select {
 
 ::-webkit-calendar-picker-indicator {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 24 24"><path fill="%23bbbbbb" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>');
+}
+.borderGradient {
+  position: relative;
+  color: #fff;
+  height: 100%;
+  min-height: 100%;
+}
+.borderGradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(
+    150.66deg,
+    #fb00ab 2.06%,
+    #3200fb 45.94%,
+    #9c37fd 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.paddingX {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.paddingY {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.borderLineY {
+  background: linear-gradient(
+    180deg,
+    #1c0228 5.28%,
+    #9b00d1 57.31%,
+    #3200fb 156.86%
+  );
+  width: 9px;
+  height: 142px;
+}
+
+.gradientTitle {
+  background: linear-gradient(
+      270deg,
+      #fb00ab 28.82%,
+      #9b00d1 70.31%,
+      #3200fb 120.42%
+    ),
+    linear-gradient(0deg, #ffffff, #ffffff);
+  font-weight: 700;
+  background-size: 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+.buttonTextSize {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.sectionMarginBottom {
+  margin-bottom: 113px;
+}
+
+.borderGradient {
+  position: relative;
+  color: #fff;
+  height: 100%;
+  min-height: 100%;
+}
+.borderGradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(
+    150.66deg,
+    #fb00ab 2.06%,
+    #3200fb 45.94%,
+    #9c37fd 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.numberInput {
+}
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.numberInput[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.backgroundGradient {
+  background: linear-gradient(270deg, #601d81 0%, rgba(160, 1, 215, 0) 100%);
+
+  border-radius: 12px;
+}
+
+.stakingTitle span {
+  background: linear-gradient(
+      270deg,
+      #fb00ab 28.82%,
+      #9b00d1 70.31%,
+      #3200fb 120.42%
+    ),
+    linear-gradient(0deg, #ffffff, #ffffff);
+  /* font-weight: 700; */
+  background-size: 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+.stakingTitle h6 {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .paddingX {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+  .paddingY {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .buttonTextSize {
+    font-size: 18px;
+  }
+  .stakingTitle h6 {
+    display: inline-block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .paddingX {
+    padding-left: 82px;
+    padding-right: 82px;
+  }
+  .paddingY {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .gradientTitle {
+    background-color: var(--arty-click);
+    background: linear-gradient(
+        270deg,
+        #fb00ab 28.82%,
+        #9b00d1 70.31%,
+        #3200fb 120.42%
+      ),
+      linear-gradient(0deg, #ffffff, #ffffff);
+    font-weight: 700;
+    background-size: 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -moz-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-text-fill-color: transparent;
+  }
+  .borderLineY {
+    background: linear-gradient(
+      180deg,
+      #1c0228 5.28%,
+      #9b00d1 57.31%,
+      #3200fb 156.86%
+    );
+    width: 9px;
+    height: 142px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .paddingX {
+    padding-left: 82px;
+    padding-right: 82px;
+  }
+  .paddingY {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+@media (min-width: 1536px) {
 }
