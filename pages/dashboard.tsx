@@ -6,6 +6,8 @@ import StakeDashboard from "@/components/StakeDashboard";
 import { ethers } from "ethers";
 import { useAddress, useSigner } from "@thirdweb-dev/react";
 import { wrappedConfluxAddr } from "@/addresses";
+import NTFStaking from "@/components/NTFStaking/NTFStaking";
+
 
 export default function Dashboard() {
   const [exchangeInput, setExchangeInput] = useState("");
@@ -107,6 +109,7 @@ export default function Dashboard() {
       </div>
 
       <StakeDashboard />
+      <NTFStaking />
 
       {/* Burn tokens */}
       <section className="px-4 lg:px-[133px] mt-24 mb-40">
