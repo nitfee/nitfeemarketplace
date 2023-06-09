@@ -22,7 +22,7 @@ export let SILVER_NFT_ADDRESS = "0xcee920e735d48d3f54259cec0c59b6fcfff754d1";
 export const wrappedConfluxAddr = "0x14b2d3bc65e74dae1030eafd8ac30c533c976a9b";
 //
 export const NTFContract = "0x91908317a1445f9f12208952533588e34d716054";
-export const NTFStaking = "0x1B0063eA49306745325595C09231ef4E66CdF314"
+export const NTFStaking = "0x436Df4BC7befD91FE621e8F4763D88945E74b9fe"
 
 
 // production marketplace addr = 0x2E4A0d0A0deD36b878Fa6BD56a5d537a682e4991
