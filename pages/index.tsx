@@ -167,7 +167,7 @@ export default function Home() {
             </h5>
           </div>
 
-          <div className="block lg:flex justify-center items-end gap-10 mt-12 lg:h-[438px]">
+          <div className="block lg:flex justify-center items-end gap-10 mt-12 lg:h-[438px] hide-scroll">
             {NFT_STEPS?.map((step) => (
               <NftStep
                 key={step.step}
@@ -187,7 +187,7 @@ export default function Home() {
           <h1 className="text-[32px] lg:text-[59px] font-semibold text-white text-center mb-12">
             Explore Marketplace
           </h1>
-          <div className="flex justify-start lg:justify-center items-center gap-5 md:mb-12 mb-8 overflow-x-scroll ">
+          <div className="flex justify-start lg:justify-center items-center gap-5 md:mb-12 mb-8 overflow-x-scroll hide-scroll">
             {CATEGORIES?.map((category) => (
               <Button
                 key={category}
