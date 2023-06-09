@@ -328,7 +328,7 @@ export default function Staking() {
                     {ESTIMATED_REWARD}
                   </p>
                   <p className="font-bold text-[32px] text-white">
-                    {45}%<sub className="text-base ml-2">{ARP}</sub>
+                    {195}%<sub className="text-base ml-2">{ARP}</sub>
                   </p>
                 </div>
               </div>
@@ -344,7 +344,7 @@ export default function Staking() {
                   </div>
                   <div>
                     <p className="text-xl capitalize">{DAILY_REWARDS}</p>
-                    <p className="text-2xl font-bold">0.02WCFX/1000 NTF</p>
+                    <p className="text-2xl font-bold">0.08 WCFX/1000 NTF</p>
                   </div>
                   <div>
                     <p className="text-xl capitalize">{TOTAL_SUPPLY}</p>
