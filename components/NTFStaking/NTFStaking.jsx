@@ -318,7 +318,7 @@ export default function Staking() {
                   {TOTAL_STAKING}
                 </p>
                 <p className="font-bold text-[32px] gradientTitle">
-                  {totalStakingNTF} {"NTF"}
+                  {totalStakingNTF.toFixed(2)} {"NTF"}
                 </p>
               </div>
               {/* // Estimated reward */}
