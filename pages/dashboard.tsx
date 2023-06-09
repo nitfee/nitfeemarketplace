@@ -127,7 +127,7 @@ export default function Dashboard() {
                 className="flex-1 py-2.5 rounded w-full px-2 text-black"
                 placeholder="Enter WCFX amount"
               />
-              <p className="text-left">Balance: {+balance}CFX</p>
+              <p className="text-left">Balance: {+balance}WCFX</p>
             </div>
             <button
               onClick={convertToCFXHandler}
