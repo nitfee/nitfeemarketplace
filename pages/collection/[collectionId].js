@@ -34,7 +34,7 @@ const Collection = () => {
   }, [collectionId]);
 
   useEffect(() => {
-    if (!collectionId) return;
+    if (!collectionId || !collectionData[0]) return;
 
     (async () => {
       // fetch nfts of this collection from firebase
@@ -52,10 +52,10 @@ const Collection = () => {
       }));
       console.log("nftsData", nftsData);
       const availableNftsData = nftsData.filter((item) => !item.soldAt);
-      console.log("test1", availableNftsData.length);
-      console.log("test2", collectionData[0].listingCount);
+      console.log("test1", availableNftsData?.length);
+      console.log("test222", collectionData[0]);
       // if test1 and test2 are not equal, set listingCount to test1
-      if (availableNftsData.length !== collectionData[0].listingCount) {
+      if (availableNftsData.length !== collectionData[0]?.listingCount) {
         const collectionRef = collection(db, "collections");
         await collectionRef.doc(collectionData[0].id).update({
           listingCount: availableNftsData.length,
@@ -64,7 +64,7 @@ const Collection = () => {
 
       setNftsList(availableNftsData);
     })();
-  }, [collectionId]);
+  }, [collectionId, collectionData[0]]);
   // get collection data from firbase using address
   return (
     <>
