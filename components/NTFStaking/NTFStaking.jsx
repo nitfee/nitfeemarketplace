@@ -33,12 +33,15 @@ import {
   useContractWrite,
   useContractRead,
 } from "@thirdweb-dev/react";
+import axios from "axios";
 
 export default function Staking() {
   const [ntfWalletBalance, setNtfWalletBalance] = useState(0);
   const [allowence, setAllowence] = useState(0);
   const [stakeAmount, setStakeAmount] = useState(0);
   const [unstakeAmount, setUnstakeAmount] = useState(0);
+  const [apr, setApr] = useState(0);
+  const [usdPrice, setUsdPrice] = useState(0);
 
   const signer = useSigner();
   const provider = signer?.provider;
@@ -55,6 +58,21 @@ export default function Staking() {
       fetchInitialData();
     }
   }, [address, provider]);
+  useEffect(() => {
+    let url =
+      "https://api.dexscreener.com/latest/dex/tokens/0x91908317a1445f9f12208952533588e34d716054";
+    axios
+      .get(url)
+      .then((res) => {
+        let price = +res?.data?.pairs[0]?.priceNative;
+        let aprValue = ((8.7 * 365) / (100000 * price)) * 100;
+        console.log("aprval", aprValue);
+        let usdNtfPrice = +res?.data?.pairs[0]?.priceUsd;
+        setUsdPrice(usdNtfPrice);
+        setApr(aprValue);
+      })
+      .catch((e) => console.log("price fetch error"));
+  });
 
   const { contract } = useContract(NTFStaking);
   const { mutateAsync: stake } = useContractWrite(contract, "stake");
@@ -328,7 +346,8 @@ export default function Staking() {
                     {ESTIMATED_REWARD}
                   </p>
                   <p className="font-bold text-[32px] text-white">
-                    {195}%<sub className="text-base ml-2">{ARP}</sub>
+                    {apr?.toFixed(2) || 0}%
+                    <sub className="text-base ml-2">{ARP}</sub>
                   </p>
                 </div>
               </div>
@@ -340,11 +359,11 @@ export default function Staking() {
                 <div className="flex gap-5 md:gap-0 justify-between items-center flex-wrap">
                   <div>
                     <p className="text-xl">{SELF_PRICE}</p>
-                    <p className="text-2xl font-bold">$0.0039</p>
+                    <p className="text-2xl font-bold">${usdPrice}</p>
                   </div>
                   <div>
                     <p className="text-xl capitalize">{DAILY_REWARDS}</p>
-                    <p className="text-2xl font-bold">0.08 WCFX/1000 NTF</p>
+                    <p className="text-2xl font-bold">0.08WCFX/1000 NTF</p>
                   </div>
                   <div>
                     <p className="text-xl capitalize">{TOTAL_SUPPLY}</p>
@@ -353,7 +372,8 @@ export default function Staking() {
                         ? Number(
                             ethers.utils.formatEther(rewardTokenBalance)
                           ).toFixed(2)
-                        : 0}
+                        : 0}{" "}
+                      WCFX
                     </p>
                   </div>
                 </div>
