@@ -64,15 +64,22 @@ export default function Staking() {
     axios
       .get(url)
       .then((res) => {
-        let price = +res?.data?.pairs[0]?.priceNative;
+        // get the object with dexId :"swappi"
+        let selectedPair;
+        res?.data?.pairs.forEach((pair) => {
+          if (pair?.dexId == "swappi") {
+            selectedPair = pair;
+          }
+        });
+        let price = +selectedPair?.priceNative;
         let aprValue = ((8.7 * 365) / (100000 * price)) * 100;
-        console.log("aprval", aprValue);
-        let usdNtfPrice = +res?.data?.pairs[0]?.priceUsd;
+        let usdNtfPrice = +selectedPair.priceUsd;
+        console.log("selectedPair", selectedPair);
         setUsdPrice(usdNtfPrice);
         setApr(aprValue);
       })
       .catch((e) => console.log("price fetch error"));
-  });
+  }, []);
 
   const { contract } = useContract(NTFStaking);
   const { mutateAsync: stake } = useContractWrite(contract, "stake");
