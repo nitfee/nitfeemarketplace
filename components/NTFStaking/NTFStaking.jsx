@@ -72,7 +72,7 @@ export default function Staking() {
           }
         });
         let price = +selectedPair?.priceNative;
-        let aprValue = ((8.7 * 365) / (100000 * price)) * 100;
+        let aprValue = ((2.7 * 365) / (100000 * price)) * 100;
         let usdNtfPrice = +selectedPair.priceUsd;
         console.log("selectedPair", selectedPair);
         setUsdPrice(usdNtfPrice);
@@ -370,7 +370,7 @@ export default function Staking() {
                   </div>
                   <div>
                     <p className="text-xl capitalize">{DAILY_REWARDS}</p>
-                    <p className="text-2xl font-bold">0.08WCFX/1000 NTF</p>
+                    <p className="text-2xl font-bold">0.02WCFX/1000 NTF</p>
                   </div>
                   <div>
                     <p className="text-xl capitalize">{TOTAL_SUPPLY}</p>
